@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppifyAI - AI Powered Multi-Platform App Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JavaScript Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .glass {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navbar -->
+    <header class="p-6 flex justify-between items-center max-w-6xl mx-auto w-full">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg shadow-emerald-500/30">
+                ⚡
+            </div>
+            <span class="text-2xl font-bold tracking-wide bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+                AppifyAI
+            </span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div id="userInfo" class="hidden text-sm bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl flex items-center gap-3">
+                <span id="userEmailDisplay" class="text-emerald-400 font-medium"></span>
+                <span id="creditBadge" class="bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg text-xs font-bold"></span>
+                <button onclick="logout()" class="text-rose-400 hover:text-rose-300 font-semibold ml-2">Logout</button>
+            </div>
+            <button id="loginNavBtn" onclick="openAuthModal()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold px-5 py-2.5 rounded-xl transition duration-300 shadow-lg shadow-emerald-500/20">
+                Google Login / Signup 🚀
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto w-full px-4 py-8 flex-grow">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
+                Turn Your Ideas into <br>
+                <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
+                    Android, iOS & Web Apps
+                </span> with AI!
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                Next-gen No-Code SaaS with AI Splash Screens, AdMob Monetization, OTA Updates & Custom Whitelabeling.
+            </p>
+        </div>
+
+        <!-- Pricing Packages Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- $20 Package -->
+            <div class="glass rounded-3xl p-6 flex flex-col justify-between border-slate-800 relative hover:border-emerald-500/50 transition">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">Starter</span>
+                    <h3 class="text-3xl font-extrabold mt-4 mb-2">$20 <span class="text-sm text-slate-400 font-normal">/ 4 Months</span></h3>
+                    <p class="text-slate-400 text-sm mb-6">Build up to 2 apps per day for 4 months (120 Credits).</p>
+                </div>
+                <button onclick="buyPackage(20, 'Starter Package', 120)" class="w-full bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 font-bold py-3 rounded-xl transition">
+                    Buy $20 Package 💳
+                </button>
+            </div>
+
+            <!-- $45 Package -->
+            <div class="glass rounded-3xl p-6 flex flex-col justify-between border-emerald-500/60 relative shadow-xl shadow-emerald-500/10">
+                <div class="absolute -top-3 right-6 bg-emerald-500 text-slate-950 text-xs font-extrabold px-3 py-1 rounded-full uppercase">Most Popular</div>
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">Pro Creator</span>
+                    <h3 class="text-3xl font-extrabold mt-4 mb-2">$45 <span class="text-sm text-slate-400 font-normal">/ 6 Months</span></h3>
+                    <p class="text-slate-400 text-sm mb-6">Build up to 5 apps per day for 6 months (300 Credits).</p>
+                </div>
+                <button onclick="buyPackage(45, 'Pro Creator Package', 300)" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition shadow-lg shadow-emerald-500/20">
+                    Buy $45 Package 🚀
+                </button>
+            </div>
+
+            <!-- $90 Package -->
+            <div class="glass rounded-3xl p-6 flex flex-col justify-between border-slate-800 relative hover:border-emerald-500/50 transition">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">Agency / Yearly</span>
+                    <h3 class="text-3xl font-extrabold mt-4 mb-2">$90 <span class="text-sm text-slate-400 font-normal">/ 1 Year</span></h3>
+                    <p class="text-slate-400 text-sm mb-6">Build up to 12 apps per day + Custom Whitelabel (700 Credits).</p>
+                </div>
+                <button onclick="buyPackage(90, 'Agency Yearly Package', 700)" class="w-full bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 font-bold py-3 rounded-xl transition">
+                    Buy $90 Package 💎
+                </button>
+            </div>
+        </div>
+
+        <!-- AI App Builder & Mockup Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+            
+            <!-- Builder Form (Left - 7 Cols) -->
+            <div id="builder" class="lg:col-span-7 glass rounded-3xl p-6 md:p-8 shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-emerald-400 flex items-center gap-2">🤖 Advanced AI App Generator</h2>
+                    <span class="text-xs text-slate-400 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">Cost: 2 Credits per App</span>
+                </div>
+
+                <form id="appForm" onsubmit="generateApp(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-md font-bold text-white mb-1">✨ What do you want to build today?</label>
+                        <textarea id="appPrompt" rows="2" placeholder="Describe your app (e.g. 'E-commerce store')" required 
+                            class="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-emerald-500 transition resize-none"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Target Website URL</label>
+                        <input type="url" id="appUrl" placeholder="https://yourwebsite.com" required oninput="updateLivePreview()"
+                            class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1 uppercase">App Theme Color</label>
+                            <select id="themeColor" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none">
+                                <option value="#10b981">Emerald Green</option>
+                                <option value="#6366f1">Indigo Blue</option>
+                                <option value="#ec4899">Neon Pink</option>
+                                <option value="#f59e0b">Amber Gold</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1 uppercase">Push Notifications</label>
+                            <select id="pushNotif" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none">
+                                <option value="enabled">Firebase FCM Enabled</option>
+                                <option value="disabled">Disabled</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- New Super Advanced Options Grid -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1 uppercase">Export Platform</label>
+                            <select id="exportPlatform" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none">
+                                <option value="apk">Android (.APK)</option>
+                                <option value="ios">iOS (.IPA / PWA)</option>
+                                <option value="both">Both Android & iOS</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1 uppercase">AdMob Monetization</label>
+                            <select id="admobOption" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none">
+                                <option value="yes">Enable Banner/Interstitial</option>
+                                <option value="no">No Ads</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Whitelabel Domain Option -->
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1 uppercase">Custom Domain Whitelabel (Optional)</label>
+                        <input type="text" id="whitelabelDomain" placeholder="app.yourbrand.com" 
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <button type="submit" id="buildBtn" 
+                        class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold py-3.5 rounded-xl text-md shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition mt-2">
+                        ⚡ Generate App with AI Engine
+                    </button>
+                </form>
+
+                <!-- Status & AI Terminal Simulation Box -->
+                <div id="statusSection" class="hidden mt-6 text-center space-y-4">
+                    <div id="loader" class="flex flex-col items-center justify-center space-y-3">
+                        <div class="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p id="statusText" class="text-emerald-400 font-semibold text-sm animate-pulse">🧠 AI Compiling Splash Screen & Gradle...</p>
+                        
+                        <div class="w-full bg-slate-950 border border-slate-800 rounded-2xl p-3 text-left mt-2">
+                            <div class="flex items-center gap-2 mb-2 pb-2 border-b border-slate-900">
+                                <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                                <span class="text-[10px] text-slate-500 font-mono ml-2">appify-compiler-engine.sh</span>
+                            </div>
+                            <pre id="terminalLogs" class="font-mono text-[11px] text-emerald-400 h-20 overflow-y-auto whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Success Result Box -->
+                    <div id="downloadBox" class="hidden bg-slate-900/90 border border-emerald-500/40 rounded-2xl p-5 text-left space-y-3">
+                        <div class="text-center">
+                            <div class="text-3xl mb-1">🎉</div>
+                            <h3 class="text-lg font-bold text-white">Your Multi-Platform App is Ready!</h3>
+                            <p class="text-slate-300 text-xs mt-1" id="resultDetails"></p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <a id="downloadBtn" href="#" download="ai-custom-app.apk"
+                                class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl text-xs text-center transition flex items-center justify-center gap-2">
+                                ⬇️ Download Package
+                            </a>
+                            <button type="button" onclick="copyAppLink()"
+                                class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold py-3 rounded-xl border border-emerald-500/30 text-xs text-center transition flex items-center justify-center gap-2">
+                                🔗 Copy Link & OTA Sync
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Phone Mockup Preview (Right - 5 Cols) -->
+            <div class="lg:col-span-5 glass rounded-3xl p-6 flex flex-col items-center justify-center border border-slate-800 shadow-2xl relative">
+                <div class="absolute top-4 left-6 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Live Phone Preview</h3>
+                </div>
+
+                <div class="w-[270px] h-[520px] bg-slate-950 border-[8px] border-slate-800 rounded-[40px] shadow-2xl relative overflow-hidden mt-8 flex flex-col">
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-28 h-5 bg-slate-800 rounded-b-xl z-20 flex items-center justify-center">
+                        <div class="w-3 h-3 bg-slate-950 rounded-full"></div>
+                    </div>
+
+                    <div class="w-full h-full pt-6 bg-slate-900 flex flex-col items-center justify-center text-center p-4 relative">
+                        <div id="previewPlaceholder" class="space-y-3">
+                            <div class="text-3xl">📱</div>
+                            <p class="text-xs text-slate-400 font-medium">Enter a website URL on the left to preview your app live here.</p>
+                        </div>
+                        <iframe id="phoneIframe" class="hidden absolute inset-0 w-full h-full pt-6 border-none bg-white" src=""></iframe>
+                    </div>
+                </div>
+                <p class="text-[11px] text-slate-500 mt-4 text-center">Real-time WebView rendering with AI Splash Screen</p>
+            </div>
+
+        </div>
+
+        <!-- Live App Analytics & OTA Sync Dashboard Section -->
+        <div class="glass rounded-3xl p-6 md:p-8 border border-slate-800 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-white">📊 Analytics & OTA Auto-Update Status</h3>
+                    <p class="text-slate-400 text-xs">Over-the-Air sync enabled across all deployed user applications</p>
+                </div>
+                <span class="bg-emerald-500/10 text-emerald-400 text-xs px-3 py-1 rounded-full font-semibold">OTA Sync Active ⚡</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                    <p class="text-slate-400 text-xs font-medium mb-1">Total Active Apps</p>
+                    <h4 id="statApps" class="text-2xl font-bold text-emerald-400">0</h4>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                    <p class="text-slate-400 text-xs font-medium mb-1">Estimated Daily Users</p>
+                    <h4 id="statUsers" class="text-2xl font-bold text-cyan-400">0</h4>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                    <p class="text-slate-400 text-xs font-medium mb-1">AdMob Monetized Views</p>
+                    <h4 id="statAdViews" class="text-2xl font-bold text-amber-400">0</h4>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Google Login / Signup Modal -->
+    <div id="authModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+        <div class="glass rounded-3xl p-8 max-w-md w-full border border-slate-800 text-center space-y-6">
+            <div class="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold border border-emerald-500/20">
+                G
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Welcome to AppifyAI</h3>
+                <p class="text-slate-400 text-sm">Sign in with Google to get 6 Free Trial Credits (valid for 3 days) and start building apps!</p>
+            </div>
+
+            <button onclick="signInWithGoogle()" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-bold py-3.5 rounded-xl flex items-center justify-center gap-3 shadow-lg transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.18 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.5-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.99 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.18 2.68 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                Continue with Google
+            </button>
+            <button onclick="closeAuthModal()" class="text-slate-500 text-sm hover:text-slate-400">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-6 text-center text-slate-500 text-sm border-t border-slate-900">
+        © 2026 AppifyAI. All rights reserved.
+    </footer>
+
+    <!-- Master System Logic -->
+    <script>
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = JSON.parse(localStorage.getItem('appify_user')) || null;
+        let generatedAppShareUrl = "";
+        let appsCreatedCount = parseInt(localStorage.getItem('appify_app_count')) || 0;
+
+        window.onload = async function() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                const email = session.user.email;
+                if (!currentUser) {
+                    currentUser = {
+                        email: email,
+                        credits: 6,
+                        isTrial: true,
+                        trialExpiry: new Date().getTime() + (3 * 24 * 60 * 60 * 1000),
+                        activePackage: null
+                    };
+                    saveUser();
+                }
+            }
+            checkUserSession();
+            updateAnalytics();
+        };
+
+        function checkUserSession() {
+            if (currentUser) {
+                if(currentUser.isTrial) {
+                    const now = new Date().getTime();
+                    if(now > currentUser.trialExpiry && currentUser.credits > 0) {
+                        currentUser.credits = 0;
+                        saveUser();
+                    }
+                }
+                document.getElementById('loginNavBtn').classList.add('hidden');
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('userEmailDisplay').innerText = currentUser.email;
+                document.getElementById('creditBadge').innerText = `${currentUser.credits} Credits`;
+            } else {
+                document.getElementById('loginNavBtn').classList.remove('hidden');
+                document.getElementById('userInfo').classList.add('hidden');
+            }
+        }
+
+        function updateAnalytics() {
+            document.getElementById('statApps').innerText = appsCreatedCount;
+            document.getElementById('statUsers').innerText = appsCreatedCount * 50;
+            document.getElementById('statAdViews').innerText = appsCreatedCount * 1250;
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        async function signInWithGoogle() {
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.href }
+            });
+            if (error) alert("Login Error: " + error.message);
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            localStorage.removeItem('appify_user');
+            currentUser = null;
+            checkUserSession();
+            alert("Logged out successfully.");
+        }
+
+        function saveUser() {
+            localStorage.setItem('appify_user', JSON.stringify(currentUser));
+        }
+
+        function buyPackage(price, packageName, credits) {
+            if (!currentUser) {
+                alert("Please login with Google first before purchasing a package!");
+                openAuthModal();
+                return;
+            }
+
+            const confirmPurchase = confirm(`Redirecting to secure Stripe Checkout for ${packageName} ($${price}). Click OK to simulate successful payment.`);
+            if (!confirmPurchase) return;
+
+            currentUser.credits += credits;
+            currentUser.isTrial = false;
+            currentUser.activePackage = packageName;
+            saveUser();
+            checkUserSession();
+
+            alert(`Payment Successful! 🎉 Added ${credits} credits to your account for ${packageName}.`);
+        }
+
+        function updateLivePreview() {
+            const urlInput = document.getElementById('appUrl').value;
+            const iframe = document.getElementById('phoneIframe');
+            const placeholder = document.getElementById('previewPlaceholder');
+
+            if (urlInput && urlInput.startsWith('http')) {
+                iframe.src = urlInput;
+                iframe.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                iframe.src = '';
+                iframe.classList.add('hidden');
+                placeholder.classList.remove('hidden');
+            }
+        }
+
+        function generateApp(e) {
+            e.preventDefault();
+
+            if (!currentUser) {
+                alert("Please log in first to build apps!");
+                openAuthModal();
+                return;
+            }
+
+            if (currentUser.credits < 2) {
+                alert("Insufficient credits! You need at least 2 credits to build an app. Please purchase a package.");
+                return;
+            }
+
+            const promptText = document.getElementById('appPrompt').value;
+            const url = document.getElementById('appUrl').value;
+            const theme = document.getElementById('themeColor').value;
+            const pushNotif = document.getElementById('pushNotif').value;
+            const exportPlatform = document.getElementById('exportPlatform').value;
+            const admob = document.getElementById('admobOption').value;
+            const whitelabel = document.getElementById('whitelabelDomain').value;
+
+            const buildBtn = document.getElementById('buildBtn');
+            const statusSection = document.getElementById('statusSection');
+            const loader = document.getElementById('loader');
+            const downloadBox = document.getElementById('downloadBox');
+            const resultDetails = document.getElementById('resultDetails');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const terminalLogs = document.getElementById('terminalLogs');
+
+            buildBtn.disabled = true;
+            statusSection.classList.remove('hidden');
+            downloadBox.classList.add('hidden');
+            loader.classList.remove('hidden');
+            terminalLogs.innerText = "";
+
+            const programmingLogs = [
+                "> Initializing AI neural net weights...",
+                "> Generating AI Splash Screen & Branding...",
+                "> Applying Theme Color: " + theme,
+                "> Configuring Push Notifications (" + pushNotif + ")...",
+                "> Setting up AdMob Monetization: " + admob,
+                "> Exporting Platform Package: " + exportPlatform.toUpperCase(),
+                whitelabel ? "> Binding Whitelabel Domain: " + whitelabel : "> Skipping Whitelabel domain...",
+                "> Connecting to target URL: " + url,
+                "> Compiling OTA Auto-Update Sync Hooks...",
+                "> AI Compilation successful! Ready for download."
+            ];
+
+            let logIndex = 0;
+            const logInterval = setInterval(() => {
+                if (logIndex < programmingLogs.length) {
+                    terminalLogs.innerText += programmingLogs[logIndex] + "\n";
+                    terminalLogs.scrollTop = terminalLogs.scrollHeight;
+                    logIndex++;
+                } else {
+                    clearInterval(logInterval);
+                    
+                    currentUser.credits -= 2;
+                    saveUser();
+                    checkUserSession();
+
+                    appsCreatedCount++;
+                    localStorage.setItem('appify_app_count', appsCreatedCount);
+                    updateAnalytics();
+
+                    loader.classList.add('hidden');
+                    downloadBox.classList.remove('hidden');
+                    resultDetails.innerText = `App generated successfully! (2 credits deducted). Platform: ${exportPlatform.toUpperCase()}`;
+                    
+                    const dummyBlob = new Blob([`AppifyAI Generated Build\nURL: ${url}\nPlatform: ${exportPlatform}\nAdMob: ${admob}\nWhitelabel: ${whitelabel}`], { type: 'application/octet-stream' });
+                    downloadBtn.href = URL.createObjectURL(dummyBlob);
+                    
+                    const appId = Math.random().toString(36).substring(2, 9);
+                    generatedAppShareUrl = window.location.href.split('#')[0] + "?app=" + appId;
+
+                    buildBtn.disabled = false;
+                }
+            }, 500);
+        }
+
+        function copyAppLink() {
+            if (!generatedAppShareUrl) {
+                alert("No app link generated yet!");
+                return;
+            }
+            navigator.clipboard.writeText(generatedAppShareUrl);
+            alert("App Link & OTA Sync URL copied to clipboard! 🔗");
+        }
+    </script>
+</body>
+</html>
